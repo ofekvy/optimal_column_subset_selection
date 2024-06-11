@@ -2,6 +2,7 @@ import numpy as np
 import random
 from inefficient_a_star_search import InefficientColumnSubsetAStarSearch
 from a_star_search import ColumnSubsetAStarSearch
+import time
 
 
 if __name__=='__main__':
@@ -23,10 +24,12 @@ if __name__=='__main__':
         print('cost: ', a_star_column_selection.cost_function(columns, 3))
         print('approx error: ', a_star_column_selection.approx_error(columns))
 
-    X = np.array([np.linspace(1, 1 + i + 2 * random.random(), 5) for i in range(10)])
-    k = 1  # Number of columns to select
+    X = np.random.rand(200, 100)
+    k = 20  # Number of columns to select
     a_star_column_selection = InefficientColumnSubsetAStarSearch(X)
+    start_time = time.time()
     selected_columns = a_star_column_selection.run_search(k)
+    end_time = time.time()
     print(X)
+    print('time: ', end_time - start_time)
     print("Selected columns:", selected_columns)
-

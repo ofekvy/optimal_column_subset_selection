@@ -59,10 +59,12 @@ class ColumnSubsetAStarSearch(ColumnSubsetSelection):
         while open_set:
             current_node = open_set.pop(0)
             current_cost, selected_columns, Q_c, H_c = current_node
+            num_of_columns = len(selected_columns)
 
             if len(selected_columns) == k:
                 return selected_columns
 
+            P = (num_of_columns + 1) * current_cost
             closed_set.add(selected_columns)
             for col in range(n):
                 if col not in selected_columns:
@@ -70,7 +72,7 @@ class ColumnSubsetAStarSearch(ColumnSubsetSelection):
                     new_cost, new_Q, new_H = self.cost_function(selected_columns, col, Q_c, H_c, k)
                     state = (new_cost, new_selected_columns, new_Q, new_H)
 
-                    if new_selected_columns not in closed_set:
+                    if new_selected_columns not in closed_set and new_cost <= P:
                         open_set.add(state)
 
         return []

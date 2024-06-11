@@ -2,6 +2,7 @@ import numpy as np
 import random
 from inefficient_a_star_search import InefficientColumnSubsetAStarSearch
 from a_star_search import ColumnSubsetAStarSearch
+import time
 
 
 if __name__=='__main__':
@@ -19,10 +20,17 @@ if __name__=='__main__':
     print(sparse_matrix)
     print("Selected columns:", selected_columns)
 
-    X = np.array([np.linspace(1, 1 + i + 2 * random.random(), 5) for i in range(10)])
-    k = 1  # Number of columns to select
+    # X = np.array([np.linspace(1, 1 + i + 2 * random.random(), 5) for i in range(10)])
+    X = np.random.rand(30, 20)
+    k = 5  # Number of columns to select
     a_star_column_selection = ColumnSubsetAStarSearch(X)
+    start_time = time.time()
     selected_columns = a_star_column_selection.run_search(k)
+    end_time = time.time()
     print(X)
+    print('time: ',end_time - start_time)
     print("Selected columns:", selected_columns)
+
+
+
 

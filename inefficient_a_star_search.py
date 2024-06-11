@@ -20,7 +20,7 @@ class InefficientColumnSubsetAStarSearch(ColumnSubsetSelection):
         Q = self.get_orthonormal_basis(S_i)
         X_i = X - Q @ Q.T @ X
 
-        eigenvalues, _ = np.linalg.eig(X_i @ X_i.T)
+        _, eigenvalues, _ = np.linalg.svd(X_i)
         return np.sort(np.real(eigenvalues))
 
     def cost_function(self, selected_columns: list, k: int) -> float:
