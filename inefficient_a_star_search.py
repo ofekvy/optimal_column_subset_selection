@@ -34,7 +34,7 @@ class InefficientColumnSubsetAStarSearch:
         m = self.m
         k_p = len(selected_columns)
         sorted_eigenvalues = self.get_b_eigenvalues(selected_columns)
-        f = np.sum(sorted_eigenvalues[:m-k+k_p])
+        f = np.sum(sorted_eigenvalues[:m-k+k_p+1])
         return f
 
     def approx_error(self, selected_columns):
