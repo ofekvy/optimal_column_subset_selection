@@ -3,7 +3,7 @@ from sortedcontainers import SortedList
 from column_subset_selection import ColumnSubsetSelection
 
 
-class InefficientColumnSubsetAStarSearch(ColumnSubsetSelection):
+class DFBnB(ColumnSubsetSelection):
     def __init__(self, X: np.ndarray):
         self.X = X
         self.m, self.n = X.shape
@@ -27,31 +27,34 @@ class InefficientColumnSubsetAStarSearch(ColumnSubsetSelection):
         m = self.m
         k_p = len(selected_columns)
         sorted_eigenvalues = self.get_b_eigenvalues(selected_columns)
-        f = np.sum(sorted_eigenvalues[:m-k+k_p])
+        f = np.sum(sorted_eigenvalues[:m - k + k_p])
         return f
 
     def run_search(self, k: int) -> list:
         X, m, n = self.X, self.m, self.n
-        initial_cost = np.trace(X @ X.T)
-        start_state = (initial_cost, [])
-        open_set = SortedList([start_state])
-        closed_set = []
 
-        while open_set:
-            current_node = open_set.pop(0)
-            current_cost, selected_columns = current_node
+        stack = [([], float('inf'))] # (selected columns, current cost)
+        best_selected_columns = []
+        min_cost = float('inf')
+
+        while stack:
+            selected_columns, cost = stack.pop()
 
             if len(selected_columns) == k:
-                return selected_columns
+                if cost < min_cost:
+                    min_cost = cost
+                    best_selected_columns = selected_columns
+                continue
+            children_list = []
+            for i in range(n):
+                if i not in selected_columns:
+                    curr_selected_columns = selected_columns + [i]
+                    curr_cost = self.cost_function(curr_selected_columns, k)
 
-            closed_set.append(selected_columns)
-            for col in range(n):
-                if col not in selected_columns:
-                    new_selected_columns = selected_columns + [col]
-                    new_cost = self.cost_function(new_selected_columns, k)
-                    state = (new_cost, new_selected_columns)
+                    if curr_cost < min_cost:
+                        children_list.append((curr_selected_columns, curr_cost))
+            children_list.sort(reverse=True, key=lambda x: x[1])
+            stack += children_list
 
-                    if new_selected_columns not in closed_set:
-                        open_set.add(state)
+        return best_selected_columns
 
-        return []
