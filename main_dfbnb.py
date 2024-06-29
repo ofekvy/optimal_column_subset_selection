@@ -23,9 +23,9 @@ if __name__=='__main__':
         # print('elgenvalues: ', a_star_column_selection.get_b_eigenvalues([i]))
         print('approx error: ', dfbnb_column_selection.approx_error(columns))
 
-    mat_df = pd.read_csv('random_matrix.csv')
+    mat_df = pd.read_csv(r"C:\Users\ofekv\Desktop\SPECTF.test")
     X = mat_df.to_numpy()
-    k = 15  # Number of columns to select
+    k = 10 # Number of columns to select
     dfbnb_column_selection = DFBnB(X)
     start_time = time.time()
     selected_columns = dfbnb_column_selection.run_search(k)

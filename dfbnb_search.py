@@ -36,22 +36,26 @@ class DFBnB(ColumnSubsetSelection):
         stack = [([], float('inf'))] # (selected columns, current cost)
         best_selected_columns = []
         min_cost = float('inf')
+        min_pruning_value = float('inf')
 
         while stack:
             selected_columns, cost = stack.pop()
+            k_p = len(selected_columns)
 
-            if len(selected_columns) == k:
+            if k_p == k:
                 if cost < min_cost:
                     min_cost = cost
                     best_selected_columns = selected_columns
                 continue
+
             children_list = []
             for i in range(n):
                 if i not in selected_columns:
                     curr_selected_columns = selected_columns + [i]
                     curr_cost = self.cost_function(curr_selected_columns, k)
-
-                    if curr_cost < min_cost:
+                    pruning_value = (k_p + 2) * curr_cost
+                    min_pruning_value = min([min_pruning_value, pruning_value])
+                    if curr_cost < min_cost and curr_cost <= min_pruning_value:
                         children_list.append((curr_selected_columns, curr_cost))
             children_list.sort(reverse=True, key=lambda x: x[1])
             stack += children_list
