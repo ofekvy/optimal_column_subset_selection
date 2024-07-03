@@ -7,7 +7,7 @@ def get_orthonormal_basis(selected_matrix):
     orthonormal_matrix, _ = np.linalg.qr(selected_matrix)
     non_zero_cols = np.sum(np.abs(selected_matrix), axis=0) > 0
 
-    return orthonormal_matrix[:, non_zero_cols]
+    return orthonormal_matrix * non_zero_cols
 
 
 def get_svd_mats(matrix: np.ndarray) -> tuple:
