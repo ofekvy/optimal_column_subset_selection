@@ -28,7 +28,7 @@ class ColumnSubsetSelection(ABC):
     def cost_function(self, selected_columns: list, selected_columns_number: int) -> float:
         sorted_eigenvalues = self.get_eigenvalues(selected_columns)
         adjusted_eigenvalues_sum = np.sum(
-            sorted_eigenvalues[:self.number_rows - selected_columns_number + len(selected_columns)])
+            sorted_eigenvalues[:self.number_columns - selected_columns_number + len(selected_columns)])
 
         return float(adjusted_eigenvalues_sum)
 

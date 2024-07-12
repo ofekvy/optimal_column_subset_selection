@@ -64,7 +64,7 @@ if __name__ == '__main__':
     test_a_star(matrix, selected_columns_number)
     test_dfbnb(matrix, selected_columns_number)
 
-    print('\nUniform Matrix')
+    print('\nReal Dataset')
     matrix_data_frame = pd.read_csv('datasets/SPECTF.test')
     matrix = matrix_data_frame.to_numpy()
     selected_columns_number = 5

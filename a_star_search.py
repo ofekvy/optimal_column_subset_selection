@@ -9,12 +9,12 @@ class AStarSearch(ColumnSubsetSelection):
     def run_search(self, selected_columns_number: int) -> list:
         initial_cost = np.trace(self.matrix @ self.matrix.T)
         start_state = (initial_cost, [])
-        open_set = SortedList([start_state])
+        open_set = SortedList([start_state], key=lambda x: -x[0])
         closed_set = []
         min_pruning_value = float('inf')
 
         while open_set:
-            current_node = open_set.pop(0)
+            current_node = open_set.pop(-1)
             current_cost, selected_columns = current_node
 
             if len(selected_columns) == selected_columns_number:
