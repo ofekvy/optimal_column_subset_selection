@@ -3,7 +3,7 @@ import time
 import numpy as np
 import pandas as pd
 
-from dfbnb_without_ordering import DFBnB
+from dfbnb_search import DFBnB
 from main import get_sparse_matrix
 
 if __name__ == '__main__':

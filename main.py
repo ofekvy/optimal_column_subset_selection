@@ -45,20 +45,10 @@ def test_dfbnb(matrix, selected_columns_number):
 
 
 if __name__ == '__main__':
-    # Case Where A* is better than DFBNB
     print('\nRandom Matrix')
     matrix_data_frame = pd.read_csv('datasets/random_matrix.csv')
     matrix = matrix_data_frame.to_numpy()
-    selected_columns_number = 5
-    print(f'Matrix shape: {matrix.shape}, Selected columns number = {selected_columns_number}')
-
-    test_a_star(matrix, selected_columns_number)
-    test_dfbnb(matrix, selected_columns_number)
-
-    # Case Where A* is not better than DFBNB
-    print('\nUniform Matrix')
-    matrix = np.ones((30, 20))
-    selected_columns_number = 7
+    selected_columns_number = 4
     print(f'Matrix shape: {matrix.shape}, Selected columns number = {selected_columns_number}')
 
     test_a_star(matrix, selected_columns_number)
@@ -67,6 +57,27 @@ if __name__ == '__main__':
     print('\nReal Dataset')
     matrix_data_frame = pd.read_csv('datasets/SPECTF.test')
     matrix = matrix_data_frame.to_numpy()
+    selected_columns_number = 3
+    print(f'Matrix shape: {matrix.shape}, Selected columns number = {selected_columns_number}')
+
+    test_a_star(matrix, selected_columns_number)
+    test_dfbnb(matrix, selected_columns_number)
+
+    print('\nReal Dataset 2')
+    matrix_data_frame = pd.read_csv('datasets/SPECTF.test')
+    matrix = matrix_data_frame.to_numpy()
+    matrix = matrix[:, 20:31]
+    selected_columns_number = 6
+    print(f'Matrix shape: {matrix.shape}, Selected columns number = {selected_columns_number}')
+
+    test_a_star(matrix, selected_columns_number)
+    test_dfbnb(matrix, selected_columns_number)
+
+
+    print('\nReal Dataset 3')
+    matrix_data_frame = pd.read_csv('datasets/SPECTF.test')
+    matrix = matrix_data_frame.to_numpy()
+    matrix = matrix[:, 20:35]
     selected_columns_number = 5
     print(f'Matrix shape: {matrix.shape}, Selected columns number = {selected_columns_number}')
 
