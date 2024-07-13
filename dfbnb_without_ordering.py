@@ -4,6 +4,7 @@ class DFBnB(ColumnSubsetSelection):
 
     @staticmethod
     def update_selected_columns(selected_columns: list,
+                                parent_matrices: list,
                                 selected_columns_number: int,
                                 number_columns: int):
         if len(selected_columns) < selected_columns_number:
@@ -15,16 +16,19 @@ class DFBnB(ColumnSubsetSelection):
             while len(selected_columns):
                 selected_columns[-1] += 1
                 if selected_columns[-1] not in selected_columns[:-1]:
+                    parent_matrices.pop()
                     if selected_columns[-1] < number_columns:
                         return
                     else:
                         selected_columns.pop()
 
     @staticmethod
-    def prune_path(selected_columns: list, number_columns: int):
+    def prune_path(selected_columns: list, parent_matrices: list,
+                   number_columns: int):
         while len(selected_columns):
             selected_columns[-1] += 1
             if selected_columns[-1] not in selected_columns[:-1]:
+                parent_matrices.pop()
                 if selected_columns[-1] < number_columns:
                     return
                 selected_columns.pop()
@@ -49,22 +53,25 @@ class DFBnB(ColumnSubsetSelection):
 
     def run_search(self, selected_columns_number: int) -> list:
         selected_columns = [0]
+        parent_matrices = [[None, self.diagonal_root_matrix]]
         best_selected_columns, min_cost = self.find_first_solution(selected_columns_number)
         min_pruning_value = float('inf')
 
         while len(selected_columns):
-            cost = self.cost_function(selected_columns, selected_columns_number)
+            cost, curr_matrices = self.efficient_cost_function(selected_columns[:-1], selected_columns[-1],
+                                                selected_columns_number, parent_matrices[-1])
+            parent_matrices.append(curr_matrices)
             if len(selected_columns) == selected_columns_number:
                 if cost < min_cost:
                     min_cost = cost
                     best_selected_columns = selected_columns.copy()
-                self.update_selected_columns(selected_columns, selected_columns_number,
+                self.update_selected_columns(selected_columns, parent_matrices, selected_columns_number,
                                              self.number_columns)
             else:
                 if cost > min_cost or cost > min_pruning_value:
-                    self.prune_path(selected_columns, self.number_columns)
+                    self.prune_path(selected_columns, parent_matrices, self.number_columns)
                 else:
-                    self.update_selected_columns(selected_columns, selected_columns_number,
+                    self.update_selected_columns(selected_columns, parent_matrices, selected_columns_number,
                                                  self.number_columns)
             min_pruning_value = min([min_pruning_value, cost*(len(selected_columns) + 1)])
 

@@ -95,7 +95,7 @@ class ColumnSubsetSelection(ABC):
         residual_matrix = self.matrix - orthonormal_basis @ orthonormal_basis.T @ self.matrix
         _, eigenvalues, _ = np.linalg.svd(residual_matrix)
 
-        return np.sort(np.abs(np.real(eigenvalues)))
+        return np.sort(np.abs(np.real(eigenvalues))**2)
 
     @abstractmethod
     def run_search(self, selected_columns_number: int) -> list:
