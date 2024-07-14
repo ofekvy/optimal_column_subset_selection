@@ -67,13 +67,15 @@ class DFBnB(ColumnSubsetSelection):
                     best_selected_columns = selected_columns.copy()
                 self.update_selected_columns(selected_columns, parent_matrices, selected_columns_number,
                                              self.number_columns)
+                self.generated_vertices += 1
             else:
                 if cost > min_cost or cost > min_pruning_value:
                     self.prune_path(selected_columns, parent_matrices, self.number_columns)
                 else:
                     self.update_selected_columns(selected_columns, parent_matrices, selected_columns_number,
                                                  self.number_columns)
+                    self.generated_vertices += 1
             min_pruning_value = min([min_pruning_value, cost*(len(selected_columns) + 1)])
 
-        return best_selected_columns
+        return best_selected_columns, self.generated_vertices
 

@@ -6,7 +6,7 @@ from column_subset_selection import ColumnSubsetSelection
 
 class AStarSearch(ColumnSubsetSelection):
 
-    def run_search(self, selected_columns_number: int) -> list:
+    def run_search(self, selected_columns_number: int):
         initial_cost = np.trace(self.matrix @ self.matrix.T)
         start_state = (initial_cost, [], (None, self.diagonal_root_matrix))
         open_set = SortedList([start_state], key=lambda x: -x[0])
@@ -18,7 +18,7 @@ class AStarSearch(ColumnSubsetSelection):
             current_cost, selected_columns, current_matrices = current_node
 
             if len(selected_columns) == selected_columns_number:
-                return selected_columns
+                return selected_columns, self.generated_vertices
 
             closed_set.append(selected_columns)
             for col in range(self.number_columns):
@@ -33,5 +33,6 @@ class AStarSearch(ColumnSubsetSelection):
 
                     if new_selected_columns not in closed_set and new_cost <= min_pruning_value:
                         open_set.add(state)
+                        self.generated_vertices += 1
 
-        return []
+        return [], self.generated_vertices

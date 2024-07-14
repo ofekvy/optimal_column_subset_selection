@@ -1,10 +1,8 @@
 import time
 
-import numpy as np
 import pandas as pd
 
 from dfbnb_search import DFBnB
-from main import get_sparse_matrix
 
 if __name__ == '__main__':
     # sparse_matrix = get_sparse_matrix()
@@ -30,7 +28,7 @@ if __name__ == '__main__':
 
     dfbnb_column_selection = DFBnB(matrix)
     start_time = time.time()
-    selected_columns = dfbnb_column_selection.run_search(selected_columns_number)
+    selected_columns, _ = dfbnb_column_selection.run_search(selected_columns_number)
     end_time = time.time()
 
     print(matrix)

@@ -25,6 +25,7 @@ class ColumnSubsetSelection(ABC):
         self.matrix = matrix
         self.number_rows, self.number_columns = matrix.shape
         self.diagonal_root_matrix, self.transformation_matrix = self.get_diagonal_and_transformation_mats()
+        self.generated_vertices = 0  # Counter for generated vertices
 
     def get_diagonal_and_transformation_mats(self) -> tuple:
         eigen_values, eigen_vectors = np.linalg.eigh(self.matrix @ self.matrix.T)

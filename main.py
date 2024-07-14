@@ -1,5 +1,6 @@
 import random
 import time
+import tracemalloc
 
 import numpy as np
 import pandas as pd
@@ -24,32 +25,57 @@ def get_sparse_matrix():
 
 def test_a_star(matrix, selected_columns_number):
     a_star_column_selection = AStarSearch(matrix)
+
+    tracemalloc.start()
     start_time = time.time()
-    selected_columns = a_star_column_selection.run_search(selected_columns_number)
+
+    selected_columns, number_of_vertices = a_star_column_selection.run_search(selected_columns_number)
+
     end_time = time.time()
+    current, peak = tracemalloc.get_traced_memory()
+    memory_usage = peak / (1024 ** 2)  # Convert to MB
+    tracemalloc.stop()
 
     print('selected_columns A* : ', selected_columns)
-    print('time A* : ', end_time - start_time)
+    print('Time A* : ', end_time - start_time)
+    print('Memory usage A* (MB) :', memory_usage)
+    print('Number of vertices A* :', number_of_vertices)
     print('Approx error A*: ', a_star_column_selection.approx_error(selected_columns))
 
 
 def test_dfbnb(matrix, selected_columns_number):
     dfbnb = DFBnB(matrix)
+
+    tracemalloc.start()
     start_time = time.time()
-    selected_columns = dfbnb.run_search(selected_columns_number)
+    selected_columns, number_of_vertices = dfbnb.run_search(selected_columns_number)
     end_time = time.time()
 
+    current, peak = tracemalloc.get_traced_memory()
+    memory_usage = peak / (1024 ** 2)  # Convert to MB
+    tracemalloc.stop()
+
     print('selected_columns DFBnB : ', selected_columns)
-    print('time DFBnB : ', end_time - start_time)
+    print('Time DFBnB : ', end_time - start_time)
+    print('Memory usage DFBnB (MB) :', memory_usage)
+    print('Number of vertices DFBnB :', number_of_vertices)
     print('Approx error DFBnB: ', dfbnb.approx_error(selected_columns))
 
 
-if __name__ == '__main__':
+def compare_random_matrix():
+    global matrix_data_frame, matrix, selected_columns_number
     print('\nRandom Matrix')
     matrix_data_frame = pd.read_csv('datasets/random_matrix.csv')
     matrix = matrix_data_frame.to_numpy()
-    selected_columns_number = 4
-    print(f'Matrix shape: {matrix.shape}, Selected columns number = {selected_columns_number}')
+
+    for selected_columns_number in range(1, 6):
+        print(f'\nMatrix shape: {matrix.shape}, Selected columns number = {selected_columns_number}')
+        test_a_star(matrix, selected_columns_number)
+        test_dfbnb(matrix, selected_columns_number)
+
+
+if __name__ == '__main__':
+    compare_random_matrix()
 
     test_a_star(matrix, selected_columns_number)
     test_dfbnb(matrix, selected_columns_number)
@@ -72,7 +98,6 @@ if __name__ == '__main__':
 
     test_a_star(matrix, selected_columns_number)
     test_dfbnb(matrix, selected_columns_number)
-
 
     print('\nReal Dataset 3')
     matrix_data_frame = pd.read_csv('datasets/SPECTF.test')
