@@ -24,13 +24,63 @@ class ColumnSubsetSelection(ABC):
     def __init__(self, matrix: np.ndarray):
         self.matrix = matrix
         self.number_rows, self.number_columns = matrix.shape
+        self.diagonal_root_matrix, self.transformation_matrix = self.get_diagonal_and_transformation_mats()
+
+    def get_diagonal_and_transformation_mats(self) -> tuple:
+        eigen_values, eigen_vectors = np.linalg.eigh(self.matrix @ self.matrix.T)
+        eig_idx = eigen_values > 1e-8
+        eigen_values = eigen_values[eig_idx]
+        diagonal_root_matrix = np.real(np.diag(eigen_values))
+        transformation_matrix = diagonal_root_matrix ** 0.5 @ np.real(eigen_vectors[:, eig_idx].T)
+        return diagonal_root_matrix, transformation_matrix
 
     def cost_function(self, selected_columns: list, selected_columns_number: int) -> float:
         sorted_eigenvalues = self.get_eigenvalues(selected_columns)
         adjusted_eigenvalues_sum = np.sum(
-            sorted_eigenvalues[:self.number_rows - selected_columns_number + len(selected_columns)])
+            sorted_eigenvalues[:len(sorted_eigenvalues) - selected_columns_number + len(selected_columns)])
 
         return float(adjusted_eigenvalues_sum)
+
+    def efficient_cost_function(self, previously_selected_columns: list, new_selected_column: int,
+                                selected_columns_number: int, parent_matrices: list) -> tuple:
+        selected_columns = previously_selected_columns + [new_selected_column]
+        current_selected_columns_number = len(selected_columns)
+        parent_orthogonal_matrix, parent_special_matrix = parent_matrices
+        selected_matrix = self.matrix[:, selected_columns]
+
+        orthonormal_mat, orthonormal_vec = self.get_updated_orthonormal_matrix(
+            parent_orthogonal_matrix,
+            selected_matrix
+        )
+        transformation_vec = self.transformation_matrix @ orthonormal_vec
+        special_matrix = parent_special_matrix - transformation_vec @ transformation_vec.T
+        cost = self.calculate_cost_from_special_matrix(special_matrix, selected_columns_number,
+                                           current_selected_columns_number)
+        new_matrices = [orthonormal_mat, special_matrix]
+        return cost, new_matrices
+
+    @staticmethod
+    def calculate_cost_from_special_matrix(special_matrix, selected_columns_number,
+                                           current_selected_columns_number):
+        eigenvalues, _ = np.linalg.eigh(special_matrix)
+        eigenvalues = np.abs(np.real(eigenvalues))
+        sorted_eigenvalues = np.sort(eigenvalues)
+        cost = np.sum(sorted_eigenvalues[:len(sorted_eigenvalues) - selected_columns_number
+                                       + current_selected_columns_number])
+        return cost
+
+    @staticmethod
+    def get_updated_orthonormal_matrix(parent_orthogonal_matrix, selected_matrix):
+        if parent_orthogonal_matrix is not None:
+            projection = selected_matrix - parent_orthogonal_matrix @ parent_orthogonal_matrix.T @ selected_matrix
+        else:
+            projection = selected_matrix
+        orthonormal_vec = projection / np.linalg.norm(projection) if np.linalg.norm(projection) > 0 else projection
+        if parent_orthogonal_matrix is not None:
+            orthonormal_mat = np.concatenate([parent_orthogonal_matrix, orthonormal_vec], axis=1)
+        else:
+            orthonormal_mat = orthonormal_vec
+        return orthonormal_mat, orthonormal_vec
 
     def approx_error(self, selected_columns):
         selected_basis = self.matrix[:, selected_columns]
@@ -45,7 +95,7 @@ class ColumnSubsetSelection(ABC):
         residual_matrix = self.matrix - orthonormal_basis @ orthonormal_basis.T @ self.matrix
         _, eigenvalues, _ = np.linalg.svd(residual_matrix)
 
-        return np.sort(np.real(eigenvalues))
+        return np.sort(np.abs(np.real(eigenvalues))**2)
 
     @abstractmethod
     def run_search(self, selected_columns_number: int) -> list:

@@ -1,5 +1,6 @@
 import time
 
+import numpy as np
 import pandas as pd
 
 from a_star_search import AStarSearch
@@ -14,6 +15,7 @@ if __name__ == '__main__':
 
     print(sparse_matrix)
     print("Selected columns:", selected_columns)
+    print('approx error: ', a_star_column_selection.approx_error(selected_columns))
 
     columns_list = [[1, 2, 8], [1, 2, 3]]
     for columns in columns_list:
@@ -23,7 +25,10 @@ if __name__ == '__main__':
 
     mat_df = pd.read_csv(r"datasets/SPECTF.test")
     matrix = mat_df.to_numpy()
-    selected_columns_number = 10
+    selected_columns_number = 5
+    matrix = matrix[:, 20:35]
+    # matrix = np.random.rand(30, 15)
+    # selected_columns_number = 5
 
     a_star_column_selection = AStarSearch(matrix)
     start_time = time.time()
