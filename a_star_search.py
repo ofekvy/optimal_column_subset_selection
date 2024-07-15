@@ -21,7 +21,8 @@ class AStarSearch(ColumnSubsetSelection):
                 return selected_columns, self.generated_vertices
 
             closed_set.append(selected_columns)
-            for col in range(self.number_columns):
+            last_index = selected_columns[-1] if selected_columns else 0
+            for col in range(last_index, self.number_columns):
                 if col not in selected_columns:
                     new_selected_columns = selected_columns + [col]
                     new_cost, new_matrices = self.efficient_cost_function(selected_columns, col,

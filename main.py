@@ -63,38 +63,47 @@ def test_dfbnb(matrix, selected_columns_number):
 
 
 def compare_random_matrix():
-    global matrix_data_frame, matrix, selected_columns_number
     print('\nRandom Matrix')
     matrix_data_frame = pd.read_csv('datasets/random_matrix.csv')
     matrix = matrix_data_frame.to_numpy()
 
-    for selected_columns_number in range(1, 6):
+    for selected_columns_number in range(1, 5):
         print(f'\nMatrix shape: {matrix.shape}, Selected columns number = {selected_columns_number}')
+        test_a_star(matrix, selected_columns_number)
+        test_dfbnb(matrix, selected_columns_number)
+
+
+def compare_SPECTF_matrix():
+    print('\nReal Dataset')
+    matrix_data_frame = pd.read_csv('datasets/SPECTF.test')
+    matrix = matrix_data_frame.to_numpy()
+    for selected_columns_number in range(1, 5):
+        print(f'Matrix shape: {matrix.shape}, Selected columns number = {selected_columns_number}')
+        test_a_star(matrix, selected_columns_number)
+        test_dfbnb(matrix, selected_columns_number)
+
+
+def compare_libras_movement_matrix():
+    print('\nReal Dataset')
+    matrix_data_frame = pd.read_csv('datasets/movement_libras.data')
+    matrix = matrix_data_frame.to_numpy()
+    for selected_columns_number in range(1, 5):
+        print(f'Matrix shape: {matrix.shape}, Selected columns number = {selected_columns_number}')
         test_a_star(matrix, selected_columns_number)
         test_dfbnb(matrix, selected_columns_number)
 
 
 if __name__ == '__main__':
     compare_random_matrix()
-
-    test_a_star(matrix, selected_columns_number)
-    test_dfbnb(matrix, selected_columns_number)
-
-    print('\nReal Dataset')
-    matrix_data_frame = pd.read_csv('datasets/SPECTF.test')
-    matrix = matrix_data_frame.to_numpy()
-    selected_columns_number = 3
-    print(f'Matrix shape: {matrix.shape}, Selected columns number = {selected_columns_number}')
-
-    test_a_star(matrix, selected_columns_number)
-    test_dfbnb(matrix, selected_columns_number)
+    compare_SPECTF_matrix()
+    compare_libras_movement_matrix()
 
     print('\nReal Dataset 2')
     matrix_data_frame = pd.read_csv('datasets/SPECTF.test')
     matrix = matrix_data_frame.to_numpy()
     matrix = matrix[:, 20:31]
     selected_columns_number = 6
-    print(f'Matrix shape: {matrix.shape}, Selected columns number = {selected_columns_number}')
+    print(f'\nMatrix shape: {matrix.shape}, Selected columns number = {selected_columns_number}')
 
     test_a_star(matrix, selected_columns_number)
     test_dfbnb(matrix, selected_columns_number)
