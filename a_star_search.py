@@ -33,6 +33,5 @@ class AStarSearch(ColumnSubsetSelection):
 
                     if new_selected_columns not in closed_set and new_cost <= min_pruning_value:
                         open_set.add(state)
-                        self.generated_vertices += 1
 
         return [], self.generated_vertices

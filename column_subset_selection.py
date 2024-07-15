@@ -44,6 +44,8 @@ class ColumnSubsetSelection(ABC):
 
     def efficient_cost_function(self, previously_selected_columns: list, new_selected_column: int,
                                 selected_columns_number: int, parent_matrices: list) -> tuple:
+        self.generated_vertices += 1
+
         selected_columns = previously_selected_columns + [new_selected_column]
         current_selected_columns_number = len(selected_columns)
         parent_orthogonal_matrix, parent_special_matrix = parent_matrices
@@ -56,7 +58,7 @@ class ColumnSubsetSelection(ABC):
         transformation_vec = self.transformation_matrix @ orthonormal_vec
         special_matrix = parent_special_matrix - transformation_vec @ transformation_vec.T
         cost = self.calculate_cost_from_special_matrix(special_matrix, selected_columns_number,
-                                           current_selected_columns_number)
+                                                       current_selected_columns_number)
         new_matrices = [orthonormal_mat, special_matrix]
         return cost, new_matrices
 
@@ -67,7 +69,7 @@ class ColumnSubsetSelection(ABC):
         eigenvalues = np.abs(np.real(eigenvalues))
         sorted_eigenvalues = np.sort(eigenvalues)
         cost = np.sum(sorted_eigenvalues[:len(sorted_eigenvalues) - selected_columns_number
-                                       + current_selected_columns_number])
+                                          + current_selected_columns_number])
         return cost
 
     @staticmethod
@@ -96,7 +98,7 @@ class ColumnSubsetSelection(ABC):
         residual_matrix = self.matrix - orthonormal_basis @ orthonormal_basis.T @ self.matrix
         _, eigenvalues, _ = np.linalg.svd(residual_matrix)
 
-        return np.sort(np.abs(np.real(eigenvalues))**2)
+        return np.sort(np.abs(np.real(eigenvalues)) ** 2)
 
     @abstractmethod
     def run_search(self, selected_columns_number: int) -> list:

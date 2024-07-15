@@ -1,5 +1,6 @@
 from column_subset_selection import ColumnSubsetSelection
 
+
 class DFBnB(ColumnSubsetSelection):
 
     @staticmethod
@@ -49,9 +50,11 @@ class DFBnB(ColumnSubsetSelection):
                         min_column = i
             best_selected_columns.append(min_column)
             solution_min_cost = min_cost
+        self.generated_vertices += len(best_selected_columns)
+
         return best_selected_columns, solution_min_cost
 
-    def run_search(self, selected_columns_number: int) -> list:
+    def run_search(self, selected_columns_number: int):
         selected_columns = [0]
         parent_matrices = [[None, self.diagonal_root_matrix]]
         best_selected_columns, min_cost = self.find_first_solution(selected_columns_number)
@@ -59,7 +62,7 @@ class DFBnB(ColumnSubsetSelection):
 
         while len(selected_columns):
             cost, curr_matrices = self.efficient_cost_function(selected_columns[:-1], selected_columns[-1],
-                                                selected_columns_number, parent_matrices[-1])
+                                                               selected_columns_number, parent_matrices[-1])
             parent_matrices.append(curr_matrices)
             if len(selected_columns) == selected_columns_number:
                 if cost < min_cost:
@@ -67,15 +70,12 @@ class DFBnB(ColumnSubsetSelection):
                     best_selected_columns = selected_columns.copy()
                 self.update_selected_columns(selected_columns, parent_matrices, selected_columns_number,
                                              self.number_columns)
-                self.generated_vertices += 1
             else:
                 if cost > min_cost or cost > min_pruning_value:
                     self.prune_path(selected_columns, parent_matrices, self.number_columns)
                 else:
                     self.update_selected_columns(selected_columns, parent_matrices, selected_columns_number,
                                                  self.number_columns)
-                    self.generated_vertices += 1
-            min_pruning_value = min([min_pruning_value, cost*(len(selected_columns) + 1)])
+            min_pruning_value = min([min_pruning_value, cost * (len(selected_columns) + 1)])
 
         return best_selected_columns, self.generated_vertices
-
