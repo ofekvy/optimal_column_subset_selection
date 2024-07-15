@@ -9,30 +9,39 @@ class DFBnB(ColumnSubsetSelection):
                                 selected_columns_number: int,
                                 number_columns: int):
         if len(selected_columns) < selected_columns_number:
-            last_column = selected_columns[-1] if selected_columns else 0
-            for i in range(last_column, number_columns):
-                if i not in selected_columns:
-                    selected_columns.append(i)
-                    return
-        else:
-            while len(selected_columns):
+            for i in range(selected_columns[-1]+1,number_columns):
+                selected_columns.append(i)
+                return
+            parent_matrices.pop()
+            while len(selected_columns)-1:
+                parent_matrices.pop()
+                selected_columns.pop()
                 selected_columns[-1] += 1
                 if selected_columns[-1] < number_columns:
                     return
-                else:
+            parent_matrices.pop()
+            selected_columns.pop()
+        else:
+            while len(selected_columns):
+                selected_columns[-1] += 1
+                second_last_element = selected_columns[-2] if len(selected_columns) > 1 else -1
+                if selected_columns[-1] > second_last_element:
                     parent_matrices.pop()
                     selected_columns.pop()
 
     @staticmethod
     def prune_path(selected_columns: list, parent_matrices: list,
                    number_columns: int):
+        parent_matrices.pop()
         while len(selected_columns):
             selected_columns[-1] += 1
-            if selected_columns[-1] < number_columns:
-                return  # Valid child node found, exit prune_path
-            else:
-                parent_matrices.pop()
+            second_last_element = selected_columns[-2] if len(selected_columns) > 1 else -1
+            if selected_columns[-1] > second_last_element:
+                if selected_columns[-1] < number_columns:
+                    return
                 selected_columns.pop()
+                if len(parent_matrices) >= len(selected_columns):
+                    parent_matrices.pop()
 
     def find_first_solution(self, selected_columns_number: int) -> tuple:
         best_selected_columns = []

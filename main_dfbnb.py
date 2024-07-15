@@ -3,6 +3,7 @@ import time
 import pandas as pd
 
 from dfbnb_search import DFBnB
+from main import get_sparse_matrix
 
 if __name__ == '__main__':
     # sparse_matrix = get_sparse_matrix()
@@ -22,7 +23,7 @@ if __name__ == '__main__':
     mat_df = pd.read_csv(r"datasets/SPECTF.test")
     matrix = mat_df.to_numpy()
     matrix = matrix[:, 20:35]
-    selected_columns_number = 6
+    selected_columns_number = 5
     # matrix = np.random.rand(30, 20)
     # selected_columns_number = 5
 
