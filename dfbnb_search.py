@@ -27,7 +27,10 @@ class DFBnB(ColumnSubsetSelection):
                 second_last_element = selected_columns[-2] if len(selected_columns) > 1 else -1
                 if selected_columns[-1] > second_last_element:
                     parent_matrices.pop()
-                    selected_columns.pop()
+                    if selected_columns[-1] < number_columns:
+                        return
+                    else:
+                        selected_columns.pop()
 
     @staticmethod
     def prune_path(selected_columns: list, parent_matrices: list,
