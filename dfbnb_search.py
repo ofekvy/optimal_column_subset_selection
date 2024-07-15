@@ -9,29 +9,29 @@ class DFBnB(ColumnSubsetSelection):
                                 selected_columns_number: int,
                                 number_columns: int):
         if len(selected_columns) < selected_columns_number:
-            for i in range(number_columns):
+            last_column = selected_columns[-1] if selected_columns else 0
+            for i in range(last_column, number_columns):
                 if i not in selected_columns:
                     selected_columns.append(i)
                     return
         else:
             while len(selected_columns):
                 selected_columns[-1] += 1
-                if selected_columns[-1] not in selected_columns[:-1]:
+                if selected_columns[-1] < number_columns:
+                    return
+                else:
                     parent_matrices.pop()
-                    if selected_columns[-1] < number_columns:
-                        return
-                    else:
-                        selected_columns.pop()
+                    selected_columns.pop()
 
     @staticmethod
     def prune_path(selected_columns: list, parent_matrices: list,
                    number_columns: int):
         while len(selected_columns):
             selected_columns[-1] += 1
-            if selected_columns[-1] not in selected_columns[:-1]:
+            if selected_columns[-1] < number_columns:
+                return  # Valid child node found, exit prune_path
+            else:
                 parent_matrices.pop()
-                if selected_columns[-1] < number_columns:
-                    return
                 selected_columns.pop()
 
     def find_first_solution(self, selected_columns_number: int) -> tuple:
