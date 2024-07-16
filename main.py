@@ -74,17 +74,17 @@ def compare_random_matrix():
 
 
 def compare_SPECTF_matrix():
-    print('\nReal Dataset')
+    print('\nSPECTF Dataset')
     matrix_data_frame = pd.read_csv('datasets/SPECTF.test')
     matrix = matrix_data_frame.to_numpy()
-    for selected_columns_number in range(1, 5):
+    for selected_columns_number in range(5, 6):
         print(f'Matrix shape: {matrix.shape}, Selected columns number = {selected_columns_number}')
         test_a_star(matrix, selected_columns_number)
         test_dfbnb(matrix, selected_columns_number)
 
 
 def compare_libras_movement_matrix():
-    print('\nReal Dataset')
+    print('\nMovement Libras Dataset')
     matrix_data_frame = pd.read_csv('datasets/movement_libras.data')
     matrix = matrix_data_frame.to_numpy()
     for selected_columns_number in range(1, 5):
@@ -97,23 +97,3 @@ if __name__ == '__main__':
     compare_random_matrix()
     compare_SPECTF_matrix()
     compare_libras_movement_matrix()
-
-    print('\nReal Dataset 2')
-    matrix_data_frame = pd.read_csv('datasets/SPECTF.test')
-    matrix = matrix_data_frame.to_numpy()
-    matrix = matrix[:, 20:31]
-    selected_columns_number = 6
-    print(f'\nMatrix shape: {matrix.shape}, Selected columns number = {selected_columns_number}')
-
-    test_a_star(matrix, selected_columns_number)
-    test_dfbnb(matrix, selected_columns_number)
-
-    print('\nReal Dataset 3')
-    matrix_data_frame = pd.read_csv('datasets/SPECTF.test')
-    matrix = matrix_data_frame.to_numpy()
-    matrix = matrix[:, 20:35]
-    selected_columns_number = 5
-    print(f'Matrix shape: {matrix.shape}, Selected columns number = {selected_columns_number}')
-
-    test_a_star(matrix, selected_columns_number)
-    test_dfbnb(matrix, selected_columns_number)
