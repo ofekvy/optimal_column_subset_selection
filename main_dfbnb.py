@@ -1,6 +1,5 @@
 import time
 
-import numpy as np
 import pandas as pd
 
 from dfbnb_search import DFBnB
@@ -24,13 +23,13 @@ if __name__ == '__main__':
     mat_df = pd.read_csv(r"datasets/SPECTF.test")
     matrix = mat_df.to_numpy()
     matrix = matrix[:, 20:35]
-    selected_columns_number = 6
+    selected_columns_number = 5
     # matrix = np.random.rand(30, 20)
     # selected_columns_number = 5
 
     dfbnb_column_selection = DFBnB(matrix)
     start_time = time.time()
-    selected_columns = dfbnb_column_selection.run_search(selected_columns_number)
+    selected_columns, _ = dfbnb_column_selection.run_search(selected_columns_number)
     end_time = time.time()
 
     print(matrix)
