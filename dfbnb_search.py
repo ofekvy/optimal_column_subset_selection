@@ -58,8 +58,9 @@ class DFBnB(ColumnSubsetSelection):
             min_parent_matrices = []
             for i in range(self.number_columns):
                 if i not in best_selected_columns:
-                    curr_cost, curr_matrices = self.efficient_cost_function(best_selected_columns, i, selected_columns_number,
-                                                             parent_matrices)
+                    curr_cost, curr_matrices = self.efficient_cost_function(best_selected_columns, i,
+                                                                            selected_columns_number, parent_matrices)
+
                     if curr_cost < min_cost:
                         min_cost = curr_cost
                         min_column = i
@@ -69,10 +70,13 @@ class DFBnB(ColumnSubsetSelection):
             parent_matrices = min_parent_matrices
         return best_selected_columns, solution_min_cost
 
-    def run_search(self, selected_columns_number: int):
+    def run_search(self, selected_columns_number: int, with_first_search=True):
         selected_columns = [0]
         parent_matrices = [[None, self.diagonal_root_matrix]]
-        best_selected_columns, min_cost = self.find_first_solution(selected_columns_number)
+        if with_first_search:
+            best_selected_columns, min_cost = self.find_first_solution(selected_columns_number)
+        else:
+            best_selected_columns, min_cost = [], float('inf')
         min_pruning_value = float('inf')
 
         while len(selected_columns):
