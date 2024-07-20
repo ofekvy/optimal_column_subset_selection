@@ -77,7 +77,6 @@ class DFBnB(ColumnSubsetSelection):
             best_selected_columns, min_cost = self.find_first_solution(selected_columns_number)
         else:
             best_selected_columns, min_cost = [], float('inf')
-        min_pruning_value = float('inf')
 
         while len(selected_columns):
             cost, curr_matrices = self.efficient_cost_function(selected_columns[:-1], selected_columns[-1],
@@ -91,13 +90,12 @@ class DFBnB(ColumnSubsetSelection):
                 self.update_selected_columns(selected_columns, parent_matrices, selected_columns_number,
                                              self.number_columns)
             else:
-                if cost > min_cost or cost > min_pruning_value:
+                if cost > min_cost:
                     self.prune_path(selected_columns, parent_matrices, self.number_columns)
                 else:
                     self.update_selected_columns(selected_columns, parent_matrices, selected_columns_number,
                                                  self.number_columns)
             end_time_calculating_next_node = time.time()
             self.storing_and_calculating_next_node_time += end_time_calculating_next_node - start_time_calculating_next_node
-            min_pruning_value = min([min_pruning_value, cost * (len(selected_columns) + 1)])
 
         return best_selected_columns, self.generated_vertices
