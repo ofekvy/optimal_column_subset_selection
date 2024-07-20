@@ -1,5 +1,5 @@
 from abc import abstractmethod, ABC
-
+import time
 import numpy as np
 
 
@@ -26,6 +26,8 @@ class ColumnSubsetSelection(ABC):
         self.number_rows, self.number_columns = matrix.shape
         self.diagonal_root_matrix, self.transformation_matrix = self.get_diagonal_and_transformation_mats()
         self.generated_vertices = 0  # Counter for generated vertices
+        self.cost_function_time = 0
+        self.storing_and_calculating_next_node_time = 0
 
     def get_diagonal_and_transformation_mats(self) -> tuple:
         eigen_values, eigen_vectors = np.linalg.eigh(self.matrix @ self.matrix.T)
@@ -39,11 +41,12 @@ class ColumnSubsetSelection(ABC):
         sorted_eigenvalues = self.get_eigenvalues(selected_columns)
         adjusted_eigenvalues_sum = np.sum(
             sorted_eigenvalues[:len(sorted_eigenvalues) - selected_columns_number + len(selected_columns)])
-
+        self.generated_vertices += 1
         return float(adjusted_eigenvalues_sum)
 
     def efficient_cost_function(self, previously_selected_columns: list, new_selected_column: int,
                                 selected_columns_number: int, parent_matrices: list) -> tuple:
+        start_time = time.time()
         self.generated_vertices += 1
 
         selected_columns = previously_selected_columns + [new_selected_column]
@@ -60,6 +63,8 @@ class ColumnSubsetSelection(ABC):
         cost = self.calculate_cost_from_special_matrix(special_matrix, selected_columns_number,
                                                        current_selected_columns_number)
         new_matrices = [orthonormal_mat, special_matrix]
+        end_time = time.time()
+        self.cost_function_time += end_time - start_time
         return cost, new_matrices
 
     @staticmethod
