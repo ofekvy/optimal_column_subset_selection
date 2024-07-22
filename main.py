@@ -38,6 +38,8 @@ def test_a_star(matrix, selected_columns_number):
 
     print('selected_columns A* : ', selected_columns)
     print('Time A* : ', end_time - start_time)
+    print('Calculating cost function Time: ', a_star_column_selection.cost_function_time)
+    print('Storing and calculating next node time: ', a_star_column_selection.storing_and_calculating_next_node_time)
     print('Memory usage A* (MB) :', memory_usage)
     print('Number of vertices A* :', number_of_vertices)
     print('Approx error A*: ', a_star_column_selection.approx_error(selected_columns))
@@ -57,6 +59,8 @@ def test_dfbnb(matrix, selected_columns_number):
 
     print('selected_columns DFBnB : ', selected_columns)
     print('Time DFBnB : ', end_time - start_time)
+    print('Calculating cost function time: ', dfbnb.cost_function_time)
+    print('Calculating next node time: ', dfbnb.storing_and_calculating_next_node_time)
     print('Memory usage DFBnB (MB) :', memory_usage)
     print('Number of vertices DFBnB :', number_of_vertices)
     print('Approx error DFBnB: ', dfbnb.approx_error(selected_columns))
@@ -67,7 +71,7 @@ def compare_random_matrix():
     matrix_data_frame = pd.read_csv('datasets/random_matrix.csv')
     matrix = matrix_data_frame.to_numpy()
 
-    for selected_columns_number in range(1, 5):
+    for selected_columns_number in range(1, 7):
         print(f'\nMatrix shape: {matrix.shape}, Selected columns number = {selected_columns_number}')
         test_a_star(matrix, selected_columns_number)
         test_dfbnb(matrix, selected_columns_number)
@@ -77,7 +81,7 @@ def compare_SPECTF_matrix():
     print('\nSPECTF Dataset')
     matrix_data_frame = pd.read_csv('datasets/SPECTF.test')
     matrix = matrix_data_frame.to_numpy()
-    for selected_columns_number in range(5, 6):
+    for selected_columns_number in range(1, 5):
         print(f'Matrix shape: {matrix.shape}, Selected columns number = {selected_columns_number}')
         test_a_star(matrix, selected_columns_number)
         test_dfbnb(matrix, selected_columns_number)
@@ -95,5 +99,7 @@ def compare_libras_movement_matrix():
 
 if __name__ == '__main__':
     compare_random_matrix()
+    print("")
     compare_SPECTF_matrix()
+    print("")
     compare_libras_movement_matrix()
